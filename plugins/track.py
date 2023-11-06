@@ -17,7 +17,7 @@ class Track(AbstractPlugin):
         super().__init__(taskplacement, taskupdatetime)
 
         new_par = dict(cursorcolor=C['BLACK'], cursorcoloroutside=C['RED'], automaticsolver=False,
-                       displayautomationstate=True, targetproportion=0.25, joystickforce=1,
+                       displayautomationstate=True, targetproportion=0.25, joystickforce=1.5,
                        inverseaxis=False)
         self.parameters.update(new_par)
 
