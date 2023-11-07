@@ -43,19 +43,19 @@
 
 0:05:10;resman;pump-1-state;failure
 
-0:015:45;sysmon;show
-0:015:45;track;show
-0:015:45;resman;show
-0:015:45;instructions;filename;default/full.txt
-0:015:45;instructions;start
-0:015:55;sysmon;automaticsolver;false
+0:08:45;sysmon;show
+0:08:45;track;show
+0:08:45;resman;show
+0:08:45;instructions;filename;default/full.txt
+0:08:45;instructions;start
+0:08:55;sysmon;automaticsolver;false
 
-0:015:55;resman;pump-1-state;off
-0:015:55;sysmon;lights-2-failure;true
-0:020:05;resman;pump-6-state;failure
-0:020:10;sysmon;scales-3-failure;true
+0:08:55;resman;pump-1-state;off
+0:08:55;sysmon;lights-2-failure;true
+0:010:05;resman;pump-6-state;failure
+0:010:10;sysmon;scales-3-failure;true
 
 
-0:020:30;sysmon;stop
-0:020:30;track;stop
-0:020:30;resman;stop
+0:015:30;sysmon;stop
+0:015:30;track;stop
+0:015:30;resman;stop
