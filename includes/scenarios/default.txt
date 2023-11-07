@@ -37,7 +37,7 @@
 0:05:05;resman;show
 0:05:05;resman;resume
 0:05:05;track;hide
-0:05:05;resman;pause
+0:05:05;track;pause
 0:05:05;instructions;filename;default/resman.txt
 0:05:05;instructions;start
 
