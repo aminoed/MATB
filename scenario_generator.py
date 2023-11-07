@@ -52,7 +52,7 @@ win.set_visible(False)
 # Useful to manipulate parameters #
 plugins = {'track':Track(win, silent=True),
            'sysmon':Sysmon(win),
-           'communications':Communications(win),
+           'communications': Communications(win),
            'resman':Resman(win)}
 
 
