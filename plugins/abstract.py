@@ -12,29 +12,29 @@ from core.logger import logger
 
 class AbstractPlugin:
     """Any plugin (or task) depends on this meta-class"""
+
     def __init__(self, taskplacement='fullscreen', taskupdatetime=-1):
 
-        self.alias = self.__class__.__name__.lower()    #   A lower version of the plugin class name
-        self.widgets = dict()                           #   To store the widget objects of a plugin
-        self.win = None                                 #   The window to which the plugin is attached
-        self.container = None                           #   The visual area of the plugin (object)
+        self.alias = self.__class__.__name__.lower()  # A lower version of the plugin class name
+        self.widgets = dict()  # To store the widget objects of a plugin
+        self.win = None  # The window to which the plugin is attached
+        self.container = None  # The visual area of the plugin (object)
         self.logger = logger
 
         self.can_receive_keys = False
         self.can_execute_keys = False
-        self.keys = set()                               #   Handle the keys that are allowed
+        self.keys = set()  # Handle the keys that are allowed
         self.display_title = taskplacement != 'invisible'
         self.automode_string = str()
 
         self.next_refresh_time = 0
         self.scenario_time = 0
 
-
-                                            #  If True
-        self.blocking = False               # :blocks all other plugins when alive
-        self.alive = False                  # :is started and not yet stopped
-        self.paused = True                  # :is not updated and cannot receive inputs
-        self.visible = False                # :all the plugins widgets are shown
+        #  If True
+        self.blocking = False  # :blocks all other plugins when alive
+        self.alive = False  # :is started and not yet stopped
+        self.paused = True  # :is not updated and cannot receive inputs
+        self.visible = False  # :all the plugins widgets are shown
         self.verbose = False
 
         self.parameters = dict(title=M[self.alias], taskplacement=taskplacement,
@@ -44,19 +44,17 @@ class AbstractPlugin:
                                                               blinkdurationms=1000)))
 
         # Private parameters
-        self.parameters['taskfeedback']['overdue'].update({'_nexttoggletime':0, 
-                                                           '_is_visible':False})
+        self.parameters['taskfeedback']['overdue'].update({'_nexttoggletime': 0,
+                                                           '_is_visible': False})
 
         # Define minimal draw order depending on task placement
         self.m_draw = BFLIM if self.parameters['taskplacement'] == 'fullscreen' else 0
-
 
     def update(self, scenario_time):
         self.scenario_time = scenario_time
         self.compute_next_plugin_state()
         self.refresh_widgets()
         self.update_can_receive_key()
-
 
     # State handling
     def show(self):
@@ -75,7 +73,6 @@ class AbstractPlugin:
         for name, widget in self.widgets.items():
             widget.show()
 
-
     def hide(self):
         """
             Hiding means showing a neutral foreground before the plugin for non-blocking plugins
@@ -91,7 +88,6 @@ class AbstractPlugin:
         self.visible = False
         self.update_can_receive_key()
 
-
         if self.parameters['taskplacement'] == 'fullscreen':
             for name, widget in self.widgets.items():
                 widget.hide()
@@ -106,20 +102,17 @@ class AbstractPlugin:
             if self.get_widget('foreground') is not None:
                 self.get_widget('foreground').show()
 
-
     def pause(self):
         if self.verbose:
             print('Pause ', self.alias)
         self.paused = True
         self.update_can_receive_key()
 
-
     def resume(self):
         if self.verbose:
             print('Resume ', self.alias)
         self.paused = False
         self.update_can_receive_key()
-
 
     def start(self):
         if self.verbose:
@@ -130,7 +123,6 @@ class AbstractPlugin:
         self.show()
         self.resume()
 
-
     def stop(self):
         if self.verbose:
             print('Stop ', self.alias)
@@ -138,37 +130,30 @@ class AbstractPlugin:
         self.pause()
         self.hide()
 
-
     def is_a_widget_name(self, name):
         return self.get_widget_fullname(name) in self.widgets
-
 
     def is_visible(self):
         return self.visible is True
 
-
     def is_paused(self):
         return self.paused is True
 
-
     def get_widget_fullname(self, name):
         return f'{self.alias}_{name}'
-
 
     def get_widget(self, name):
         if not self.is_a_widget_name(name):
             return
         return self.widgets[self.get_widget_fullname(name)]
 
-
     def get_response_timers(self):
         '''Return the time since which responses are expected (list of int)'''
         pass
 
-
     def update_can_receive_key(self):
         '''Update the ability of the plugin to receive either material or emulated inputs'''
-        
+
         if self.paused == True or self.is_visible() == False:
             self.can_receive_keys = False
         else:
@@ -176,22 +161,21 @@ class AbstractPlugin:
                 self.can_receive_keys = not self.parameters['automaticsolver']
             else:
                 self.can_receive_keys = True
-        
+
         if REPLAY_MODE == True:
             self.can_receive_keys = False
             self.can_execute_keys = True
         else:
             self.can_execute_keys = self.can_receive_keys
-        
 
     def compute_next_plugin_state(self):
         if not self.scenario_time >= self.next_refresh_time or self.is_paused():
             return 0
-        
+
         if self.verbose:
             print(self.alias, 'Compute next state')
 
-        self.next_refresh_time = self.scenario_time + self.parameters['taskupdatetime']/1000
+        self.next_refresh_time = self.scenario_time + self.parameters['taskupdatetime'] / 1000
 
         # Should an automation state (string) be displayed ?
         if 'displayautomationstate' in self.parameters and self.parameters['displayautomationstate']:
@@ -202,7 +186,6 @@ class AbstractPlugin:
         else:
             self.automode_string = ''
         return 1
-
 
     def refresh_widgets(self):
 
@@ -222,7 +205,6 @@ class AbstractPlugin:
         if self.display_title == True:
             self.get_widget('task_title').set_text(self.parameters['title'].upper())
 
-
         # Update the overdue feedback state if relevant
         # Overdue state computing is here to unmerge its temporal
         # logic from the taskupdatetime parameter (so the alarm
@@ -231,15 +213,15 @@ class AbstractPlugin:
         if overdue['active'] and self.get_response_timers() is not None:
             # Should an alarm be displayed ?
             if any([rt > overdue['delayms'] for rt in self.get_response_timers()]):
-                if overdue['blinkdurationms'] == 0: # No blink case
-                    #overdue['widget'].set_visibility(True)
+                if overdue['blinkdurationms'] == 0:  # No blink case
+                    # overdue['widget'].set_visibility(True)
                     overdue['_is_visible'] = True
                 else:  # Blink case
                     if overdue['_nexttoggletime'] == 0:  # First toggle
                         overdue['_nexttoggletime'] = self.scenario_time
 
                     if self.scenario_time >= overdue['_nexttoggletime']:
-                        overdue['_nexttoggletime'] += overdue['blinkdurationms']/1000
+                        overdue['_nexttoggletime'] += overdue['blinkdurationms'] / 1000
                         overdue['_is_visible'] = not overdue['_is_visible']
             else:
                 overdue['_blinktimer'] = 0
@@ -252,7 +234,6 @@ class AbstractPlugin:
             overdue['widget'].set_border_color(overdue['color'])
         return 1
 
-
     def filter_key(self, keystr):
         if self.can_execute_keys == False:
             return
@@ -263,13 +244,11 @@ class AbstractPlugin:
         
         return
 
-
     def on_key_press(self, symbol, modifiers):
         if self.can_receive_keys == False:
             return
         keystr = winkey.symbol_string(symbol)
         self.do_on_key(keystr, 'press', False)
-
 
     def on_key_release(self, symbol, modifiers):
         if self.can_receive_keys == False:
@@ -277,12 +256,11 @@ class AbstractPlugin:
         keystr = winkey.symbol_string(symbol)
         self.do_on_key(keystr, 'release', False)
 
-
-    def do_on_key(self, keystr, state, emulate=False):   # JC: pour le solver, devrait prendre un parametre is_solver_action pour separer de vraies actions du participant
+    def do_on_key(self, keystr, state, emulate=False):
+        # JC: For the solver, it should take an 'is_solver_action' parameter to distinguish real participant actions.
         if REPLAY_MODE == True and emulate == False:
             return  # During replay, ignore keys that are not emulated
         return self.filter_key(keystr)
-
 
     def is_key_state(self, keystr, is_pressed):
         if keystr in self.win.keyboard:
@@ -290,15 +268,14 @@ class AbstractPlugin:
         else:
             return
 
-
     def create_widgets(self):
         if self.verbose:
             print(self.alias, 'Creating widgets')
         pthp = PLUGIN_TITLE_HEIGHT_PROPORTION
 
         self.container = self.win.get_container(self.parameters['taskplacement'])
-        self.title_container = self.container.reduce_and_translate(height=pthp,   y=1)
-        self.task_container  = self.container.reduce_and_translate(height=1-pthp, y=0)
+        self.title_container = self.container.reduce_and_translate(height=pthp, y=1)
+        self.task_container = self.container.reduce_and_translate(height=1 - pthp, y=0)
 
         # A fullscreen plugin must have its proper background to override the MATB black middle band
         if self.parameters['taskplacement'] == 'fullscreen':
@@ -309,11 +286,12 @@ class AbstractPlugin:
         # Also : add overdue feedback widget to visible plugins
         elif self.parameters['taskplacement'] != 'invisible':
             self.add_widget('foreground', Frame, self.task_container, fill_color=C['BACKGROUND'],
-                            draw_order=self.m_draw+10)
+                            draw_order=self.m_draw + 10)
             self.parameters['taskfeedback']['overdue']['widget'] = self.add_widget('overdue', Frame,
-                            container=self.task_container, border_thickness=0.025,
-                            border_color=C['RED'], fill_color=None)
-
+                                                                                   container=self.task_container,
+                                                                                   border_thickness=0.025,
+                                                                                   border_color=C['RED'],
+                                                                                   fill_color=None)
 
         if self.display_title == True:
             self.add_widget('task_title', Simpletext, container=self.title_container,
@@ -324,11 +302,9 @@ class AbstractPlugin:
             if self.parameters['displayautomationstate'] is True:
                 position = self.automode_position if hasattr(self, 'automode_position') else (0.5, 0.5)
                 autocont = self.container.reduce_and_translate(width=0.15, height=0.05, x=position[0],
-                                                                                       y=position[1])
+                                                               y=position[1])
                 self.add_widget('automode', Simpletext, container=autocont,
-                               text=self.automode_string, x=0.5, y=0.5)
-
-
+                                text=self.automode_string, x=0.5, y=0.5)
 
     def add_widget(self, name, cls, container, **kwargs):
         fullname = self.get_widget_fullname(name)
@@ -339,7 +315,6 @@ class AbstractPlugin:
             self.logger.record_aoi(container, fullname)
 
         return self.widgets[fullname]
-
 
     def set_parameter(self, keys_str, value):
         keys_list = keys_str.split('-')
@@ -356,15 +331,13 @@ class AbstractPlugin:
                 self.keys.remove(old_value)
         return dic
 
-
     def log_all_parameters(self, search_dict, key_prefix=''):
         for key, value in search_dict.items():
             new_key_prefix = str(key) if len(key_prefix) == 0 else key_prefix + '-' + str(key)
-            if isinstance(value, dict): # Recursion search
+            if isinstance(value, dict):  # Recursion search
                 self.log_all_parameters(value, new_key_prefix)
-            else: # Value found
+            else:  # Value found
                 logger.record_parameter(self.alias, new_key_prefix, value)
-
 
     def log_performance(self, name, value):
         if not hasattr(self, 'performance'):
@@ -374,12 +347,11 @@ class AbstractPlugin:
         self.performance[name].append(value)
         self.logger.log_performance(self.alias, name, value)
 
-
     def keep_value_between(self, value, down, up):
         return max(min(value, up), down)
 
     def grouped(self, iterable, n):
-        return zip(*[iter(iterable)]*n)
+        return zip(*[iter(iterable)] * n)
 
 
 class BlockingPlugin(AbstractPlugin):
@@ -406,7 +378,6 @@ class BlockingPlugin(AbstractPlugin):
         #  should not be stopped)
         self.stop_on_end = True
 
-
     def create_widgets(self):
         super().create_widgets()
         self.go_to_next_slide = True  # So the first slide appears as soon as possible
@@ -418,7 +389,7 @@ class BlockingPlugin(AbstractPlugin):
 
         # Only if this input path exists, retrieve its content into slides (split with <newpage>)
         if self.input_path is not None and self.input_path.exists():
-            self.slides.append(str())                      # Create the first slide
+            self.slides.append(str())  # Create the first slide
             lines = self.input_path.open(encoding='utf8').readlines()
 
             if self.ignore_empty_lines == True:
@@ -427,21 +398,21 @@ class BlockingPlugin(AbstractPlugin):
             for line in lines:
                 if '#' not in line:
                     if '<newpage>' in line:
-                        self.slides.append(str())   # New slide
+                        self.slides.append(str())  # New slide
                     else:
                         self.slides[-1] += line
         else:
-            pass # This should not happen (input_path is checked before the scenario is played)
-
+            pass  # This should not happen (input_path is checked before the scenario is played)
 
     def update(self, dt):
-        #print(self.paused, self.visible)
+        # print(self.paused, self.visible)
         super().update(dt)
         if self.go_to_next_slide == True:
             self.go_to_next_slide = False
             if len(self.slides) > 0:  # Are there remaining slides ?
-                self.hide()          # If so retrieve the next slide and show it
-                self.current_slide = self.slides[0]; del self.slides[0]
+                self.hide()  # If so retrieve the next slide and show it
+                self.current_slide = self.slides[0];
+                del self.slides[0]
                 self.make_slide_graphs()
                 self.show()
             else:
@@ -451,17 +422,16 @@ class BlockingPlugin(AbstractPlugin):
                     self.hide()
                     self.blocking = False
 
-
     def make_slide_graphs(self):
         # Extract the title from the slide string if relevant
         slide_content = self.current_slide.split('\n')
-        title_idx = [i for i,t in enumerate(slide_content) if '<h1>' in t]
+        title_idx = [i for i, t in enumerate(slide_content) if '<h1>' in t]
         if len(title_idx) > 0:
-             # In case multiple title tags, take the last one
+            # In case multiple title tags, take the last one
             title = slide_content[title_idx[-1]]
 
             self.add_widget(f'title', SimpleHTML, container=self.container,
-                            text=title, wrap_width=1, y=0.9, draw_order=self.m_draw+1)
+                            text=title, wrap_width=1, y=0.9, draw_order=self.m_draw + 1)
             del slide_content[title_idx[-1]]
 
         # Remove a potential previous title
@@ -473,15 +443,13 @@ class BlockingPlugin(AbstractPlugin):
 
         if self.parameters['allowkeypress'] == True:
             key_name = self.parameters['response']['key'].lower()
-            response_text = '<center><p>'+self.parameters['response']['text']+'</p></center>'
+            response_text = '<center><p>' + self.parameters['response']['text'] + '</p></center>'
             self.add_widget(f'press_{key_name}', SimpleHTML, container=self.container,
-                            draw_order=self.m_draw+1, text=response_text, wrap_width=0.5, x=0.5, y=0.1)
-
+                            draw_order=self.m_draw + 1, text=response_text, wrap_width=0.5, x=0.5, y=0.1)
 
     def on_key_press(self, symbol, modifiers):
         if self.parameters['allowkeypress'] == True:
             super().on_key_press(symbol, modifiers)
-
 
     def do_on_key(self, keystr, state, emulate=False):
         keystr = super().do_on_key(keystr, state, emulate)
@@ -492,27 +460,25 @@ class BlockingPlugin(AbstractPlugin):
         if keystr.lower() == 'space' and state == 'release':
             self.go_to_next_slide = True
 
-
-
 # TODO : Include a Solver class like
 # ~ """
 # ~ class Solver():
-    # ~ def __init__(name: str, block_input: bool, solvermode_string=_('AUTO')):
-        # ~ self.name = name
-        # ~ self.block_input = block_input
-        # ~ self.solvermode_string = display
+# ~ def __init__(name: str, block_input: bool, solvermode_string=_('AUTO')):
+# ~ self.name = name
+# ~ self.block_input = block_input
+# ~ self.solvermode_string = display
 
-    # ~ def get_solvermode_string():
-        # ~ return self.solvermode_string
+# ~ def get_solvermode_string():
+# ~ return self.solvermode_string
 
-    # ~ def on_plugin_update(plugin, *param):
-        # ~ if plugin is RESMAN:
-            # ~ ...
-            # ~ plugin.do_on_key(...)
+# ~ def on_plugin_update(plugin, *param):
+# ~ if plugin is RESMAN:
+# ~ ...
+# ~ plugin.do_on_key(...)
 
-    # ~ def on_plugin_failure(plugin, *param):
-        # ~ if plugin is SYSMON or plugin is communications:
-            # ~ ...
-            # ~ plugin.do_on_key(...)
+# ~ def on_plugin_failure(plugin, *param):
+# ~ if plugin is SYSMON or plugin is communications:
+# ~ ...
+# ~ plugin.do_on_key(...)
 
 # ~ """

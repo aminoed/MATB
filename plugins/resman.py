@@ -12,7 +12,7 @@ class Resman(AbstractPlugin):
     def __init__(self, taskplacement='bottommid', taskupdatetime=2000):
         super().__init__(taskplacement, taskupdatetime)
 
-        self.keys = {'NUM_1','NUM_2','NUM_3','NUM_4','NUM_5','NUM_6','NUM_7', 'NUM_8'}
+        self.keys = {'_1','_2','_3','_4','_5','_6','_7', '_8'}
 
         new_par = dict(automaticsolver=False, displayautomationstate=True, pumpcoloroff=C['WHITE'],
                        pumpcoloron=C['GREEN'], pumpcolorfailure=C['RED'], toleranceradius=250,
@@ -33,14 +33,14 @@ class Resman(AbstractPlugin):
                                          lossperminute=0, _infoside='right')),
 
                         pump=dict([
-                           ('1', dict(flow=800, state='off', key='NUM_1', _fromtank='c', _totank='a')),
-                           ('2', dict(flow=600, state='off', key='NUM_2', _fromtank='e', _totank='a')),
-                           ('3', dict(flow=800, state='off', key='NUM_3', _fromtank='d', _totank='b')),
-                           ('4', dict(flow=600, state='off', key='NUM_4', _fromtank='f', _totank='b')),
-                           ('5', dict(flow=600, state='off', key='NUM_5', _fromtank='e', _totank='c')),
-                           ('6', dict(flow=600, state='off', key='NUM_6', _fromtank='f', _totank='d')),
-                           ('7', dict(flow=400, state='off', key='NUM_7', _fromtank='a', _totank='b')),
-                           ('8', dict(flow=400, state='off', key='NUM_8', _fromtank='b', _totank='a'))
+                           ('1', dict(flow=800, state='off', key='_1', _fromtank='c', _totank='a')),
+                           ('2', dict(flow=600, state='off', key='_2', _fromtank='e', _totank='a')),
+                           ('3', dict(flow=800, state='off', key='_3', _fromtank='d', _totank='b')),
+                           ('4', dict(flow=600, state='off', key='_4', _fromtank='f', _totank='b')),
+                           ('5', dict(flow=600, state='off', key='_5', _fromtank='e', _totank='c')),
+                           ('6', dict(flow=600, state='off', key='_6', _fromtank='f', _totank='d')),
+                           ('7', dict(flow=400, state='off', key='_7', _fromtank='a', _totank='b')),
+                           ('8', dict(flow=400, state='off', key='_8', _fromtank='b', _totank='a'))
                            ]
                         )
                    )
