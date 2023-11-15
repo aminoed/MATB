@@ -6,6 +6,13 @@
 
 import gettext, sys
 from pathlib import Path
+import os
+
+# obtain the absolute path
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# set current dir as script dir
+os.chdir(script_dir)
 
 # Read and install the specified language iso
 # The LOCALE_PATH constant can't be set into constants.py because
