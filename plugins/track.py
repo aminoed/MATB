@@ -1,10 +1,11 @@
 # Copyright 2023, by Julien Cegarra & Benoît Valéry. All rights reserved.
 # Institut National Universitaire Champollion (Albi, France).
 # License : CeCILL, version 2.1 (see the LICENSE file)
-
-
+import random
+import time
 from math import sin, pi, ceil
 from pyglet.input import get_joysticks
+from pyglet.window import key as winkey
 from plugins.abstract import AbstractPlugin
 from core.widgets import Reticle
 from core.error import errors
@@ -45,6 +46,13 @@ class Track(AbstractPlugin):
 
     def get_response_timers(self):
         return [self.response_time]
+
+    # pressed the C button, change the mode
+    def on_key_press(self, symbol, modifiers):
+        super(Track, self).on_key_press(symbol, modifiers)
+        if symbol == winkey.C:
+            self.parameters['automaticsolver'] = not self.parameters.get('automaticsolver', False)
+            # print(f'Automatic Solver: {self.parameters["automaticsolver"]}')
 
     def create_widgets(self):
         super().create_widgets()
@@ -101,6 +109,10 @@ class Track(AbstractPlugin):
         cursorx, cursory = 0, 0
         moffx, moffy = 0, 0
 
+        # set compensation interval
+        compensation_interval = 0.05
+        # start timer
+        last_comp_time = time.time()
         while True:
             # Must wait the drawing of the reticle to evaluate x & y gain
             if f'{self.alias}_reticle' in self.widgets.keys():
@@ -111,11 +123,22 @@ class Track(AbstractPlugin):
                 cursory = sin(ysin) * self.ygain
 
                 compx, compy = 0, 0
+
+                elapsed_time = time.time() - last_comp_time
                 # Potential compensations of cursor movement
-                # If the automode is enabled, apply automatic compensation to the cursor drift
-                if self.parameters['automaticsolver'] == True:
+                # If the automode is enabled and elapsed time greater than the setting interval
+                # apply automatic compensation to the cursor drift
+                if self.parameters['automaticsolver'] and elapsed_time > compensation_interval:
                     compx = 1 if -self.reticle.cursor_relative[0] >= 0 else -1
                     compy = 1 if -self.reticle.cursor_relative[1] >= 0 else -1
+
+                    # TODO: add random value to the compensation
+                    # random.seed(42)
+                    # # generate random number
+                    # compx += random.uniform(-0.7, 0.7)
+                    # compy += random.uniform(-0.7, 0.7)
+                    # print('===auto: x=', compx, ' y=', compy)
+                    last_comp_time = time.time()
 
                 # Else if a manual input (joystick) is recorded, apply its offset to the cursor,
                 # as a function of its gain
