@@ -45,7 +45,7 @@ sysmon,scales-4-failure,Set this to True if you want to trigger a failure,(boole
 sysmon,scales-4-side,"To which side trigger the failure? (0:random, 1:up, -1:down)","-1, 0, 1",0
 sysmon,scales-4-key,Keyboard key to resolve a failure,(keyboard key),F4
 track,title,"Title of the task, displayed if the plugin is visible",(string),Tracking
-track,taskplacement,Task location in a 3x2 canvas,"`topleft`, `topmid`, `topright`, `bottomleft`, `bottommid`, `bottomright`, `fullscreen`",topmid
+track,taskplacement,Task location in a 3x2 canvas,"`topleft`, `topmid`, `topright`, `bottomleft`, `bottommid`, `bottomright`, `fullscreen`",bottommid
 track,taskupdatetime,Delay between plugin updates (ms),(positive integer),20
 track,cursorcolor,Color of the moving cursor,"`white`, `black`, `green`, `red`, `background`, `lightgrey`, `grey`, `blue`",black
 track,cursorcoloroutside,Color of the moving cursor when outside the target area,"`white`, `black`, `green`, `red`, `background`, `lightgrey`, `grey`, `blue`",red

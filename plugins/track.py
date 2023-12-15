@@ -14,7 +14,7 @@ from core.constants import Group as G, COLORS as C, FONT_SIZES as F, REPLAY_MODE
 
 
 class Track(AbstractPlugin):
-    def __init__(self, taskplacement='topmid', taskupdatetime=20, silent=False):
+    def __init__(self, taskplacement='bottomright', taskupdatetime=20, silent=False):
         super().__init__(taskplacement, taskupdatetime)
 
         new_par = dict(cursorcolor=C['BLACK'], cursorcoloroutside=C['RED'], automaticsolver=False,

@@ -181,7 +181,7 @@ class Window(Window):
                 Container('topright', x2, y1, w-x2, h/2),
                 Container('bottomleft', 0, b, x3, h/2),
                 Container('bottommid', x3, b, x4 - x3, h/2),
-                Container('bottomright', x4, b, w - x4, h/2),
+                Container('bottomright', x4 - x3, b, w - x1, h/2),
                 Container('mediastrip', 0, 0, self._width*(1+mar), b),
                 Container('inputstrip', w, b, self._width*mar, h)]
 
